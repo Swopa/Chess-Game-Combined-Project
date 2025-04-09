@@ -1,3 +1,4 @@
+package main.com.ShavguLs.chess.legacy;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -38,7 +39,7 @@ public class StartMenu implements Runnable {
         components.add(blackPanel, BorderLayout.EAST);
         final JLabel blackPiece = new JLabel();
         try {
-            Image blackImg = ImageIO.read(getClass().getResource("bp.png"));
+            Image blackImg = ImageIO.read(getClass().getResource("/images/bp.png"));
             blackPiece.setIcon(new ImageIcon(blackImg));
             blackPanel.add(blackPiece);
         } catch (Exception e) {
@@ -56,7 +57,7 @@ public class StartMenu implements Runnable {
         final JLabel whitePiece = new JLabel();
         
         try {
-            Image whiteImg = ImageIO.read(getClass().getResource("wp.png"));
+            Image whiteImg = ImageIO.read(getClass().getResource("/images/wp.png"));
             whitePiece.setIcon(new ImageIcon(whiteImg));
             whitePanel.add(whitePiece);
             startWindow.setIconImage(whiteImg);

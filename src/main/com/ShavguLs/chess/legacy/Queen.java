@@ -1,4 +1,4 @@
-
+package main.com.ShavguLs.chess.legacy;
 
 import java.util.LinkedList;
 import java.util.List;

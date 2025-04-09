@@ -1,3 +1,4 @@
+package main.com.ShavguLs.chess.legacy;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -32,7 +33,7 @@ public class GameWindow {
         
 
         try {
-            Image whiteImg = ImageIO.read(getClass().getResource("wp.png"));
+            Image whiteImg = ImageIO.read(getClass().getResource("/images/wp.png"));
             gameWindow.setIconImage(whiteImg);
         } catch (Exception e) {
             System.out.println("Game file wp.png not found");

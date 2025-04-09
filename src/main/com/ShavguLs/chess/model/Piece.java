@@ -1,75 +1,77 @@
-package main.com.ShavguLs.chess.legacy;
+package main.com.ShavguLs.chess.model;
 
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-
+import java.awt.Image;
 import javax.imageio.ImageIO;
+import java.io.IOException;
 
 public abstract class Piece {
     private final int color;
+
     private Square currentSquare;
-    private BufferedImage img;
-    
-    public Piece(int color, Square initSq, String img_file) {
+
+    private Image img;
+
+    private final String imageFile;
+
+    public Piece(int color, Square initSq, String imgFile) {
         this.color = color;
         this.currentSquare = initSq;
-        
+        this.imageFile = imgFile;
+
         try {
             if (this.img == null) {
-              this.img = ImageIO.read(getClass().getResource(img_file));
+                this.img = ImageIO.read(getClass().getResource(imgFile));
             }
-          } catch (IOException e) {
-            System.out.println("File not found: " + e.getMessage());
-          }
+        } catch (IOException e) {
+            System.out.println("Fileb not found: " + e.getMessage());
+        }
     }
-    
+
     public boolean move(Square fin) {
         Piece occup = fin.getOccupyingPiece();
-        
+
         if (occup != null) {
             if (occup.getColor() == this.color) return false;
-            else fin.capture(this);
+
+            // TODO
+            fin.capture(this, new Board());
+            // don't works correctle
         }
-        
+
         currentSquare.removePiece();
         this.currentSquare = fin;
         currentSquare.put(this);
         return true;
     }
-    
+
     public Square getPosition() {
         return currentSquare;
     }
-    
+
     public void setPosition(Square sq) {
         this.currentSquare = sq;
     }
-    
+
     public int getColor() {
         return color;
     }
-    
+
     public Image getImage() {
         return img;
     }
-    
-    public void draw(Graphics g) {
-        int x = currentSquare.getX();
-        int y = currentSquare.getY();
-        
-        g.drawImage(this.img, x, y, null);
+
+    public String getImageFile() {
+        return imageFile;
     }
-    
+
     public int[] getLinearOccupations(Square[][] board, int x, int y) {
         int lastYabove = 0;
         int lastXright = 7;
         int lastYbelow = 7;
         int lastXleft = 0;
-        
+
         for (int i = 0; i < y; i++) {
             if (board[i][x].isOccupied()) {
                 if (board[i][x].getOccupyingPiece().getColor() != this.color) {
@@ -101,24 +103,16 @@ public abstract class Piece {
                 } else lastXright = i - 1;
             }
         }
-        
+
         int[] occups = {lastYabove, lastYbelow, lastXleft, lastXright};
-        
         return occups;
     }
-    
+
     public List<Square> getDiagonalOccupations(Square[][] board, int x, int y) {
         LinkedList<Square> diagOccup = new LinkedList<Square>();
-        
+
         int xNW = x - 1;
-        int xSW = x - 1;
-        int xNE = x + 1;
-        int xSE = x + 1;
         int yNW = y - 1;
-        int ySW = y + 1;
-        int yNE = y - 1;
-        int ySE = y + 1;
-        
         while (xNW >= 0 && yNW >= 0) {
             if (board[yNW][xNW].isOccupied()) {
                 if (board[yNW][xNW].getOccupyingPiece().getColor() == this.color) {
@@ -133,7 +127,9 @@ public abstract class Piece {
                 xNW--;
             }
         }
-        
+
+        int xSW = x - 1;
+        int ySW = y + 1;
         while (xSW >= 0 && ySW < 8) {
             if (board[ySW][xSW].isOccupied()) {
                 if (board[ySW][xSW].getOccupyingPiece().getColor() == this.color) {
@@ -148,7 +144,9 @@ public abstract class Piece {
                 xSW--;
             }
         }
-        
+
+        int xSE = x + 1;
+        int ySE = y + 1;
         while (xSE < 8 && ySE < 8) {
             if (board[ySE][xSE].isOccupied()) {
                 if (board[ySE][xSE].getOccupyingPiece().getColor() == this.color) {
@@ -163,7 +161,9 @@ public abstract class Piece {
                 xSE++;
             }
         }
-        
+
+        int xNE = x + 1;
+        int yNE = y - 1;
         while (xNE < 8 && yNE >= 0) {
             if (board[yNE][xNE].isOccupied()) {
                 if (board[yNE][xNE].getOccupyingPiece().getColor() == this.color) {
@@ -178,10 +178,9 @@ public abstract class Piece {
                 xNE++;
             }
         }
-        
+
         return diagOccup;
     }
-    
-    // No implementation, to be implemented by each subclass
+
     public abstract List<Square> getLegalMoves(Board b);
 }

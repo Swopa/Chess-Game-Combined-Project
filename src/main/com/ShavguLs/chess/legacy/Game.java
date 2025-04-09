@@ -1,3 +1,4 @@
+package main.com.ShavguLs.chess.legacy;
 
 import javax.swing.*;
 
