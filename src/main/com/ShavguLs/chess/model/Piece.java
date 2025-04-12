@@ -35,9 +35,7 @@ public abstract class Piece {
         if (occup != null) {
             if (occup.getColor() == this.color) return false;
 
-            // TODO
-            fin.capture(this, new Board());
-            // don't works correctle
+            fin.capture(this, currentSquare.getBoard());
         }
 
         currentSquare.removePiece();

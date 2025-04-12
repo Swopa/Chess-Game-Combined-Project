@@ -1,10 +1,13 @@
 package main.com.ShavguLs.chess.model;
 
+import main.com.ShavguLs.chess.view.GameWindow;
+
 import java.util.LinkedList;
 import java.util.List;
 
 public class Board {
     private Square[][] board;
+    private final GameWindow g;
 
     private final LinkedList<Piece> blackPieces;
     private final LinkedList<Piece> whitePieces;
@@ -12,7 +15,8 @@ public class Board {
     private boolean whiteTurn;
     private CheckmateDetector checkmateDetector;
 
-    public Board() {
+    public Board(GameWindow g) {
+        this.g = g;
         board = new Square[8][8];
         blackPieces = new LinkedList<>();
         whitePieces = new LinkedList<>();
