@@ -47,7 +47,7 @@ public class GameWindow {
         gameData.setSize(gameData.getPreferredSize());
         gameWindow.add(gameData, BorderLayout.NORTH);
 
-        this.board = new Board(this);
+        this.board = new Board();
     }
 
     private JPanel gameDataPanel(final String bn, final String wn,

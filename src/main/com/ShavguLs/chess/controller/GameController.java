@@ -15,7 +15,7 @@ public class GameController {
     }
 
     public void setUpNewGame(){
-        board = new Board();
+        board = new Board(); //TODO
         LinkedList<Piece> whitePieces = new LinkedList<>();
         LinkedList<Piece> blackPieces = new LinkedList<>();
 
