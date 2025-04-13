@@ -116,8 +116,8 @@ public class ChessBoardPanel extends JPanel implements MouseListener, MouseMotio
     @Override
     public void mouseDragged(MouseEvent e) {
         if (currentPiece != null) {
-            currentX = e.getX() - 24;
-            currentY = e.getY() - 24;
+            currentX = e.getX() - (SQUARE_SIZE / 2);
+            currentY = e.getY() - (SQUARE_SIZE / 2);
             repaint();
         }
     }

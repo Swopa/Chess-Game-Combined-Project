@@ -14,6 +14,10 @@ public class Board {
     private boolean whiteTurn;
     private CheckmateDetector checkmateDetector;
 
+    //todo
+    private King whiteKing;
+    private King blackKing;
+
     public Board() {
         board = new Square[8][8];
         blackPieces = new LinkedList<>();

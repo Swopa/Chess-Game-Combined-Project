@@ -81,15 +81,20 @@ public class GameController {
         Square destination = board.getSquareArray()[row][col];
 
         List<Square> legalMoves = selectedPiece.getLegalMoves(board);
-        if (!legalMoves.contains(destination)){
+        List<Square> allowableSquares = board.getAllowableSquares();
+
+        if (!legalMoves.contains(destination) || !allowableSquares.contains(destination) ||
+        !checkmateDetector.testMove(selectedPiece, destination)){
             return false;
         }
 
         boolean success = selectedPiece.move(destination);
 
+        if (success){
+            board.switchTurn();
+            checkmateDetector.update();
+        }
         selectedPiece = null;
-
-        checkmateDetector.update();
 
         return success;
     }
@@ -112,5 +117,23 @@ public class GameController {
             return true;
         }
         return false;
+    }
+
+    //todo
+    public int checkStatus(){
+        if (checkmateDetector.blackInCheck()){
+            return 0;
+        }else  if (checkmateDetector.whiteInCheck()){
+            return 1;
+        }
+        return -1;
+    }
+
+    public Piece getSelectedPiece(){
+        return selectedPiece;
+    }
+
+    public void clearSelectedPiece(){
+        selectedPiece = null;
     }
 }
