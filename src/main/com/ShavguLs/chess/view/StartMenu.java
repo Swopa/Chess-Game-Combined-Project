@@ -1,8 +1,5 @@
 package main.com.ShavguLs.chess.view;
 
-import main.com.ShavguLs.chess.legacy.Game;
-import main.com.ShavguLs.chess.legacy.GameWindow;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -64,5 +61,9 @@ public class StartMenu implements Runnable{
 
         startWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         startWindow.setVisible(true);
+    }
+
+    public static void main(String[] args){
+        SwingUtilities.invokeLater(new StartMenu());
     }
 }

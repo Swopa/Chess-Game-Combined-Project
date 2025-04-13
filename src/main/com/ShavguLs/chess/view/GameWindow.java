@@ -1,6 +1,6 @@
 package main.com.ShavguLs.chess.view;
 
-import main.com.ShavguLs.chess.legacy.StartMenu;
+import main.com.ShavguLs.chess.controller.GameController;
 import main.com.ShavguLs.chess.model.Board;
 import main.com.ShavguLs.chess.model.Clock;
 
@@ -26,28 +26,41 @@ public class GameWindow {
     private int horizontalGap = 20;
     private int verticalGap = 20;
 
+    private ChessBoardPanel boardPanel;
+    private GameController controller;
+
     public GameWindow(String blackName, String whiteName, int hh, int mm, int ss){
+        gameWindow = new JFrame("Chess Game");
+        this.controller = new GameController();
+
         blackClock = new Clock(hh, ss, mm);
         whiteClock = new Clock(hh, ss, mm);
 
-        gameWindow = new JFrame("Chess Game");
-
         try{
-            Image whiteImg = ImageIO.read(getClass().getResource("/images/bk.png"));
-            gameWindow.setIconImage(whiteImg);
+            Image blackImg = ImageIO.read(getClass().getResource("/images/bk.png"));
+            gameWindow.setIconImage(blackImg);
         }catch (Exception ex){
             System.out.println("Game file bk.png not found!");
         }
 
         gameWindow.setLocation(locationX, locationY);
-
         gameWindow.setLayout(new BorderLayout(horizontalGap, verticalGap));
 
         JPanel gameData = gameDataPanel(blackName, whiteName, hh, mm, ss);
         gameData.setSize(gameData.getPreferredSize());
         gameWindow.add(gameData, BorderLayout.NORTH);
 
-        this.board = new Board();
+        this.board = controller.getBoard();
+
+        this.boardPanel = new ChessBoardPanel(this, controller);
+        gameWindow.add(boardPanel, BorderLayout.CENTER);
+        gameWindow.add(buttons(), BorderLayout.SOUTH);
+        gameWindow.setMinimumSize(gameWindow.getPreferredSize());
+        gameWindow.setSize(gameWindow.getPreferredSize());
+        gameWindow.setResizable(false);
+        gameWindow.pack();
+        gameWindow.setVisible(true);
+        gameWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     private JPanel gameDataPanel(final String bn, final String wn,
