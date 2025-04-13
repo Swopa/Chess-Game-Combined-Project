@@ -4,14 +4,19 @@ import main.com.ShavguLs.chess.model.*;
 
 import java.util.LinkedList;
 import java.util.List;
+import javax.swing.Timer;
 
 public class GameController {
     private Board board;
     private CheckmateDetector checkmateDetector;
     private Piece selectedPiece = null;
+    private Clock whiteClock;
+    private Clock blackClock;
+    private Timer timer;
 
-    public GameController(){
+    public GameController(int hh, int mm, int ss){
         setUpNewGame();
+        setupClock(hh, mm, ss);
     }
 
     public void setUpNewGame(){
@@ -45,6 +50,20 @@ public class GameController {
 
         checkmateDetector = new CheckmateDetector(board, whitePieces, blackPieces, whiteKing, blackKing);
 
+        if (whiteClock!=null && blackClock != null){
+            resetClocks();
+        }
+    }
+
+    private void resetClocks() {
+        if (timer!=null){
+            timer.stop();
+        }
+    }
+
+    public void setupClock(int hh, int mm, int ss){
+        whiteClock = new Clock(hh, mm, ss);
+        blackClock = new Clock(hh, mm, ss);
     }
 
     public boolean selectPiece(int row, int col){
@@ -135,5 +154,50 @@ public class GameController {
 
     public void clearSelectedPiece(){
         selectedPiece = null;
+    }
+
+    public Clock getWhiteClock() {
+        return whiteClock;
+    }
+
+    public Clock getBlackClock() {
+        return blackClock;
+    }
+
+    public void startTimer(ClockCallback callback){
+        if (whiteClock != null && blackClock != null){
+            timer = new Timer(1000, e -> {
+                if (board.getTurn()){
+                    whiteClock.decr();
+                    callback.updateWhiteClock(whiteClock.getTime());
+
+                    if (whiteClock.outOfTime()){
+                        timer.stop();
+                        callback.timeOut(true);
+                    }
+                }else{
+                    blackClock.decr();
+                    callback.updateBlackClock(blackClock.getTime());
+
+                    if (blackClock.outOfTime()){
+                        timer.stop();
+                        callback.timeOut(false);
+                    }
+                }
+            });
+            timer.start();
+        }
+    }
+
+    public void stopTimer(){
+        if (timer != null){
+            timer.stop();
+        }
+    }
+
+    public interface ClockCallback {
+        void updateWhiteClock(String time);
+        void updateBlackClock(String time);
+        void timeOut(boolean whiteTimedOut);
     }
 }

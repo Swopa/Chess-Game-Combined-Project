@@ -33,4 +33,16 @@ public class Clock {
         String fTime = fHrs + ":" + fMins + ":" + fSecs;
         return fTime;
     }
+
+    public int getHours(){
+        return hh;
+    }
+
+    public int getMinutes(){
+        return mm;
+    }
+
+    public int getSeconds(){
+        return ss;
+    }
 }
