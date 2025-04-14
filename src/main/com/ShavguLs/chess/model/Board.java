@@ -1,7 +1,5 @@
 package main.com.ShavguLs.chess.model;
 
-import main.com.ShavguLs.chess.view.GameWindow;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -104,10 +102,6 @@ public class Board {
         return whiteTurn;
     }
 
-    public void setTurn(boolean whiteTurn) {
-        this.whiteTurn = whiteTurn;
-    }
-
     public void switchTurn() {
         this.whiteTurn = !this.whiteTurn;
     }
@@ -124,32 +118,40 @@ public class Board {
         return checkmateDetector.getAllowableSquares(whiteTurn);
     }
 
-    public boolean makeMove(Piece piece, Square destination) {
-        if ((piece.getColor() == 1 && !whiteTurn) || (piece.getColor() == 0 && whiteTurn)) {
-            return false;
-        }
-
-        List<Square> legalMoves = piece.getLegalMoves(this);
-        List<Square> allowableSquares = checkmateDetector.getAllowableSquares(whiteTurn);
-
-        if (legalMoves.contains(destination) && allowableSquares.contains(destination) &&
-                checkmateDetector.testMove(piece, destination)) {
-
-            piece.move(destination);
-            checkmateDetector.update();
-
-            whiteTurn = !whiteTurn;
-
-            return true;
-        }
-        return false;
+    public CheckmateDetector getCheckmateDetector() {
+        return checkmateDetector;
     }
 
-    public boolean isBlackCheckmated() {
-        return checkmateDetector.blackCheckMated();
-    }
+//    public void setTurn(boolean whiteTurn) {
+//        this.whiteTurn = whiteTurn;
+//    }
 
-    public boolean isWhiteCheckmated() {
-        return checkmateDetector.whiteCheckMated();
-    }
+    //    public boolean makeMove(Piece piece, Square destination) {
+//        if ((piece.getColor() == 1 && !whiteTurn) || (piece.getColor() == 0 && whiteTurn)) {
+//            return false;
+//        }
+//
+//        List<Square> legalMoves = piece.getLegalMoves(this);
+//        List<Square> allowableSquares = checkmateDetector.getAllowableSquares(whiteTurn);
+//
+//        if (legalMoves.contains(destination) && allowableSquares.contains(destination) &&
+//                checkmateDetector.testMove(piece, destination)) {
+//
+//            piece.move(destination);
+//            checkmateDetector.update();
+//
+//            whiteTurn = !whiteTurn;
+//
+//            return true;
+//        }
+//        return false;
+//    }
+
+//    public boolean isBlackCheckmated() {
+//        return checkmateDetector.blackCheckMated();
+//    }
+//
+//    public boolean isWhiteCheckmated() {
+//        return checkmateDetector.whiteCheckMated();
+//    }
 }

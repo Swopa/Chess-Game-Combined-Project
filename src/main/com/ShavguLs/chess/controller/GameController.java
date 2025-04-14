@@ -65,17 +65,14 @@ public class GameController {
         whiteClock = new Clock(hh, mm, ss);
         blackClock = new Clock(hh, mm, ss);
     }
-
     public boolean selectPiece(int row, int col){
         if (row < 0 || row >= 8 || col < 0 || col >= 8){
             return false;
         }
-
         Square square = board.getSquareArray()[row][col];
         if (!square.isOccupied()){
             return false;
         }
-
         Piece piece = square.getOccupyingPiece();
         if (piece.getColor() == 1 && board.getTurn()){
             selectedPiece = piece;
@@ -84,7 +81,6 @@ public class GameController {
             selectedPiece = piece;
             return true;
         }
-
         return false;
     }
 

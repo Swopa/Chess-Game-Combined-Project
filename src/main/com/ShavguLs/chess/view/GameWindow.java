@@ -2,7 +2,6 @@ package main.com.ShavguLs.chess.view;
 
 import main.com.ShavguLs.chess.controller.GameController;
 import main.com.ShavguLs.chess.model.Board;
-import main.com.ShavguLs.chess.model.Clock;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -17,8 +16,6 @@ public class GameWindow implements GameController.ClockCallback{
     private JLabel whiteTimeLabel;
 
     private Timer timer;
-
-    private Board board;
 
     private int locationX = 100;
     private int locationY = 100;
@@ -109,7 +106,7 @@ public class GameWindow implements GameController.ClockCallback{
         whiteClockPanel.add(whiteTimeLabel, BorderLayout.CENTER);
 
         JPanel blackClockPanel = new JPanel(new BorderLayout());
-        whiteClockPanel.setBorder(BorderFactory.createTitledBorder("White Clock"));
+        blackClockPanel.setBorder(BorderFactory.createTitledBorder("Black Clock"));
         blackClockPanel.add(blackTimeLabel, BorderLayout.CENTER);
 
         gameData.add(whiteClockPanel);
