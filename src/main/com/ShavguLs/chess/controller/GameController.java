@@ -2,9 +2,9 @@ package main.com.ShavguLs.chess.controller;
 
 import main.com.ShavguLs.chess.model.*;
 
+import javax.swing.*;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.Timer;
 
 public class GameController {
     private Board board;
@@ -20,7 +20,7 @@ public class GameController {
     }
 
     public void setUpNewGame(){
-        board = new Board(); //TODO
+        board = new Board();
         LinkedList<Piece> whitePieces = new LinkedList<>();
         LinkedList<Piece> blackPieces = new LinkedList<>();
 

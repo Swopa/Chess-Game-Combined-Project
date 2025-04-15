@@ -83,7 +83,7 @@ public class CheckmateDetector {
 
             if (!p.getClass().equals(King.class)) {
                 if (p.getPosition() == null) {
-                    wIter.remove();
+                    bIter.remove();
                     continue;
                 }
 

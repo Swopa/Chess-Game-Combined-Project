@@ -121,37 +121,4 @@ public class Board {
     public CheckmateDetector getCheckmateDetector() {
         return checkmateDetector;
     }
-
-//    public void setTurn(boolean whiteTurn) {
-//        this.whiteTurn = whiteTurn;
-//    }
-
-    //    public boolean makeMove(Piece piece, Square destination) {
-//        if ((piece.getColor() == 1 && !whiteTurn) || (piece.getColor() == 0 && whiteTurn)) {
-//            return false;
-//        }
-//
-//        List<Square> legalMoves = piece.getLegalMoves(this);
-//        List<Square> allowableSquares = checkmateDetector.getAllowableSquares(whiteTurn);
-//
-//        if (legalMoves.contains(destination) && allowableSquares.contains(destination) &&
-//                checkmateDetector.testMove(piece, destination)) {
-//
-//            piece.move(destination);
-//            checkmateDetector.update();
-//
-//            whiteTurn = !whiteTurn;
-//
-//            return true;
-//        }
-//        return false;
-//    }
-
-//    public boolean isBlackCheckmated() {
-//        return checkmateDetector.blackCheckMated();
-//    }
-//
-//    public boolean isWhiteCheckmated() {
-//        return checkmateDetector.whiteCheckMated();
-//    }
 }
