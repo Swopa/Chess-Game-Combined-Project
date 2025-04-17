@@ -29,7 +29,7 @@ public class Pawn extends Piece {
         
         if (c == 0) {
             if (!wasMoved) {
-                if (!board[y+2][x].isOccupied()) {
+                if (y + 1 < 8 && !board[y + 1][x].isOccupied() && y + 2 < 8 && !board[y + 2][x].isOccupied()) {
                     legalMoves.add(board[y+2][x]);
                 }
             }
@@ -39,15 +39,15 @@ public class Pawn extends Piece {
                     legalMoves.add(board[y+1][x]);
                 }
             }
-            
+
             if (x+1 < 8 && y+1 < 8) {
-                if (board[y+1][x+1].isOccupied()) {
+                if (board[y+1][x+1].isOccupied() && board[y+1][x+1].getOccupyingPiece().getColor() != this.getColor()) {
                     legalMoves.add(board[y+1][x+1]);
                 }
             }
-                
+
             if (x-1 >= 0 && y+1 < 8) {
-                if (board[y+1][x-1].isOccupied()) {
+                if (board[y+1][x-1].isOccupied() && board[y+1][x-1].getOccupyingPiece().getColor() != this.getColor()) {
                     legalMoves.add(board[y+1][x-1]);
                 }
             }
@@ -55,7 +55,7 @@ public class Pawn extends Piece {
         
         if (c == 1) {
             if (!wasMoved) {
-                if (!board[y-2][x].isOccupied()) {
+                if (y-1 >= 0 && !board[y-1][x].isOccupied() && y-2 >= 0 && !board[y-2][x].isOccupied()) {
                     legalMoves.add(board[y-2][x]);
                 }
             }
@@ -67,13 +67,13 @@ public class Pawn extends Piece {
             }
             
             if (x+1 < 8 && y-1 >= 0) {
-                if (board[y-1][x+1].isOccupied()) {
+                if (board[y-1][x+1].isOccupied() && board[y-1][x+1].getOccupyingPiece().getColor() != this.getColor()) {
                     legalMoves.add(board[y-1][x+1]);
                 }
             }
                 
             if (x-1 >= 0 && y-1 >= 0) {
-                if (board[y-1][x-1].isOccupied()) {
+                if (board[y-1][x-1].isOccupied() && board[y-1][x-1].getOccupyingPiece().getColor() != this.getColor()) {
                     legalMoves.add(board[y-1][x-1]);
                 }
             }

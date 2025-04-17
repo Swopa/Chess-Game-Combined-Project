@@ -52,8 +52,8 @@ public class Board {
         board[0][3].put(blackQueen);
         board[7][3].put(whiteQueen);
 
-        King blackKing = new King(0, board[0][4], "/images/bking.png");
-        King whiteKing = new King(1, board[7][4], "/images/wking.png");
+        blackKing = new King(0, board[0][4], "/images/bking.png");
+        whiteKing = new King(1, board[7][4], "/images/wking.png");
         board[0][4].put(blackKing);
         board[7][4].put(whiteKing);
 

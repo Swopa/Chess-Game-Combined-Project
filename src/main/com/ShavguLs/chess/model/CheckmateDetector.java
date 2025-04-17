@@ -378,9 +378,21 @@ public class CheckmateDetector {
         if (p.getColor() == 0 && blackInCheck()) movetest = false;
         else if (p.getColor() == 1 && whiteInCheck()) movetest = false;
 
-        p.move(init);
-        if (c != null) {
+        p.setPosition(init);
+        init.put(p);
+
+        if (c != null){
             sq.put(c);
+
+            if (c.getColor() == 0){
+                if (!blackPieces.contains(c)){
+                    blackPieces.add(c);
+                }
+            }else {
+                if (!whitePieces.contains(c)){
+                    whitePieces.add(c);
+                }
+            }
         }else {
             sq.removePiece();
         }
