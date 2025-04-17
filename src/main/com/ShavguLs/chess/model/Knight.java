@@ -21,7 +21,10 @@ public class Knight extends Piece{
                 if(Math.abs(i) == 2 ^ Math.abs(k) == 2) {
                     if (k != 0 && i != 0) {
                         try {
-                            legalMoves.add(board[y + k][x + i]);
+                            Square targetSquare = board[y + k][x + i];
+                            if (!targetSquare.isOccupied() || targetSquare.getOccupyingPiece().getColor() != this.getColor()){
+                                legalMoves.add(targetSquare);
+                            }
                         } catch (ArrayIndexOutOfBoundsException e) {
                             continue;
                         }
@@ -29,7 +32,6 @@ public class Knight extends Piece{
                 }
             }
         }
-
         return legalMoves;
     }
 }

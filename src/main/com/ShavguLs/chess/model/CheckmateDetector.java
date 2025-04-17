@@ -369,7 +369,6 @@ public class CheckmateDetector {
 
     public boolean testMove(Piece p, Square sq) {
         Piece c = sq.getOccupyingPiece();
-
         boolean movetest = true;
         Square init = p.getPosition();
 
@@ -380,7 +379,11 @@ public class CheckmateDetector {
         else if (p.getColor() == 1 && whiteInCheck()) movetest = false;
 
         p.move(init);
-        if (c != null) sq.put(c);
+        if (c != null) {
+            sq.put(c);
+        }else {
+            sq.removePiece();
+        }
 
         update();
 
