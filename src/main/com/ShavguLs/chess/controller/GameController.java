@@ -106,12 +106,61 @@ public class GameController {
         boolean success = selectedPiece.move(destination);
 
         if (success){
+            if (selectedPiece instanceof Pawn){
+                Pawn pawn = (Pawn) selectedPiece;
+                if (pawn.canPromote()){
+                    promotePawn(pawn);
+                }
+            }
             board.switchTurn();
             checkmateDetector.update();
         }
         selectedPiece = null;
 
         return success;
+    }
+
+    private void promotePawn(Pawn pawn) {
+        int color = pawn.getColor();
+        Square position = pawn.getPosition();
+
+        String[] options = {"Queen", "Rook", "Bishop", "Knight"};
+        int choice = JOptionPane.showOptionDialog(null,
+                "Choose promotion piece",
+                "Pawn Promotion",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null, options, options[0]);
+
+        Piece newPiece = null;
+        String imgPrefix = (color == 1) ? "/images/w" : "/images/b";
+
+        switch (choice) {
+            case 0: // Queen
+                newPiece = new Queen(color, position, imgPrefix + "q.png");
+                break;
+            case 1: // Rook
+                newPiece = new Rook(color, position, imgPrefix + "r.png");
+                break;
+            case 2: // Bishop
+                newPiece = new Bishop(color, position, imgPrefix + "b.png");
+                break;
+            case 3: // Knight
+                newPiece = new Knight(color, position, imgPrefix + "k.png");
+                break;
+            default:
+                newPiece = new Queen(color, position, imgPrefix + "q.png");
+        }
+        position.removePiece();
+        position.put(newPiece);
+
+        if (color == 1) {
+            board.getWhitePieces().remove(pawn);
+            board.getWhitePieces().add(newPiece);
+        } else {
+            board.getBlackPieces().remove(pawn);
+            board.getBlackPieces().add(newPiece);
+        }
     }
 
     public Board getBoard(){

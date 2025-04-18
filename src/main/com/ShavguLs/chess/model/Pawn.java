@@ -10,6 +10,11 @@ public class Pawn extends Piece{
         super(color, initSq, imgFile);
     }
 
+    public boolean canPromote(){
+        int y = this.getPosition().getYNum();
+        return (this.getColor() == 0 && y == 7) || (this.getColor() == 1 && y == 0);
+    }
+
     @Override
     public boolean move(Square fin) {
         boolean b = super.move(fin);
