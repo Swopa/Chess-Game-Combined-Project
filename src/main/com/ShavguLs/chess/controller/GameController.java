@@ -148,28 +148,47 @@ public class GameController {
         }
     }
 
-    private boolean handleCastling(King king, Square destination){
+    private boolean handleCastling(King king, Square destination) {
         int kingY = king.getPosition().getYNum();
         int kingX = king.getPosition().getXNum();
         int destX = destination.getXNum();
         Square[][] squares = board.getSquareArray();
 
-        if (destX > kingX){
+        if (destX > kingX) {
             Piece rook = squares[kingY][kingX + 3].getOccupyingPiece();
-            king.move(destination);
-            rook.move(squares[kingY][kingX + 1]);
-            destination.setDisplay(true);
-            squares[kingY][kingX+1].setDisplay(true);
-            return true;
-        }else{
-            Piece rook = squares[kingY][kingX - 4].getOccupyingPiece();
-            king.move(destination);
-            rook.move(squares[kingY][kingX-1]);
-            destination.setDisplay(true);
-            squares[kingY][kingX-1].setDisplay(true);
-
-            return true;
+            if (rook instanceof Rook) {
+                if (!king.move(destination)) {
+                    return false;
+                }
+                if (!rook.move(squares[kingY][kingX + 1])) {
+                    king.setPosition(squares[kingY][kingX]);
+                    squares[kingY][kingX].put(king);
+                    destination.removePiece();
+                    return false;
+                }
+                destination.setDisplay(true);
+                squares[kingY][kingX + 1].setDisplay(true);
+                return true;
+            }
         }
+        else {
+            Piece rook = squares[kingY][kingX - 4].getOccupyingPiece();
+            if (rook instanceof Rook) {
+                if (!king.move(destination)) {
+                    return false;
+                }
+                if (!rook.move(squares[kingY][kingX - 1])) {
+                    king.setPosition(squares[kingY][kingX]);
+                    squares[kingY][kingX].put(king);
+                    destination.removePiece();
+                    return false;
+                }
+                destination.setDisplay(true);
+                squares[kingY][kingX - 1].setDisplay(true);
+                return true;
+            }
+        }
+        return false;
     }
 
     private void promotePawn(Pawn pawn) {

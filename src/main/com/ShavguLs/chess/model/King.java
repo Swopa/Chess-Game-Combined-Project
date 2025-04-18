@@ -62,20 +62,20 @@ public class King extends Piece{
     }
 
     private boolean canCastleKingside(Square[][] board, int x, int y) {
-        if (x + 3 < 8 &&
-                !board[y][x + 1].isOccupied() &&
-                !board[y][x + 2].isOccupied() &&
-                board[y][x + 3].isOccupied()) {
-
+        if (x + 3 < 8 && !hasMoved && board[y][x + 3].isOccupied()) {
             Piece piece = board[y][x + 3].getOccupyingPiece();
+
             if (piece instanceof Rook &&
                     piece.getColor() == this.getColor() &&
                     !((Rook)piece).hasMoved()) {
 
-                CheckmateDetector detector = getPosition().getBoard().getCheckmateDetector();
-                if (!detector.isSquareAttacked(board[y][x + 1], this.getColor()) &&
-                        !detector.isSquareAttacked(board[y][x + 2], this.getColor())) {
-                    return true;
+                if (!board[y][x + 1].isOccupied() && !board[y][x + 2].isOccupied()) {
+                    CheckmateDetector detector = getPosition().getBoard().getCheckmateDetector();
+                    if (!detector.kingInCheck(this.getColor()) &&
+                            !detector.isSquareAttacked(board[y][x + 1], this.getColor()) &&
+                            !detector.isSquareAttacked(board[y][x + 2], this.getColor())) {
+                        return true;
+                    }
                 }
             }
         }
@@ -83,21 +83,22 @@ public class King extends Piece{
     }
 
     private boolean canCastleQueenside(Square[][] board, int x, int y) {
-        if (x - 4 >= 0 &&
-                !board[y][x - 1].isOccupied() &&
-                !board[y][x - 2].isOccupied() &&
-                !board[y][x - 3].isOccupied() &&
-                board[y][x - 4].isOccupied()) {
-
+        if (x - 4 >= 0 && !hasMoved && board[y][x - 4].isOccupied()) {
             Piece piece = board[y][x - 4].getOccupyingPiece();
+
             if (piece instanceof Rook &&
                     piece.getColor() == this.getColor() &&
                     !((Rook)piece).hasMoved()) {
 
-                CheckmateDetector detector = getPosition().getBoard().getCheckmateDetector();
-                if (!detector.isSquareAttacked(board[y][x - 1], this.getColor()) &&
-                        !detector.isSquareAttacked(board[y][x - 2], this.getColor())) {
-                    return true;
+                if (!board[y][x - 1].isOccupied() &&
+                        !board[y][x - 2].isOccupied() &&
+                        !board[y][x - 3].isOccupied()) {
+                    CheckmateDetector detector = getPosition().getBoard().getCheckmateDetector();
+                    if (!detector.kingInCheck(this.getColor()) &&
+                            !detector.isSquareAttacked(board[y][x - 1], this.getColor()) &&
+                            !detector.isSquareAttacked(board[y][x - 2], this.getColor())) {
+                        return true;
+                    }
                 }
             }
         }

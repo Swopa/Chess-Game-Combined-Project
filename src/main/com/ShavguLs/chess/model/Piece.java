@@ -70,35 +70,46 @@ public abstract class Piece {
         int lastYbelow = 7;
         int lastXleft = 0;
 
-        for (int i = 0; i < y; i++) {
+        for (int i = y - 1; i >= 0; i--) {
             if (board[i][x].isOccupied()) {
                 if (board[i][x].getOccupyingPiece().getColor() != this.color) {
                     lastYabove = i;
-                } else lastYabove = i + 1;
+                } else {
+                    lastYabove = i + 1;
+                }
+                break;
             }
         }
 
-        for (int i = 7; i > y; i--) {
+        for (int i = y + 1; i < 8; i++) {
             if (board[i][x].isOccupied()) {
                 if (board[i][x].getOccupyingPiece().getColor() != this.color) {
                     lastYbelow = i;
-                } else lastYbelow = i - 1;
+                } else {
+                    lastYbelow = i - 1;
+                }
+                break;
             }
         }
 
-        for (int i = 0; i < x; i++) {
+        for (int i = x - 1; i >= 0; i--) {
             if (board[y][i].isOccupied()) {
                 if (board[y][i].getOccupyingPiece().getColor() != this.color) {
                     lastXleft = i;
-                } else lastXleft = i + 1;
+                } else {
+                    lastXleft = i + 1;
+                }
+                break;
             }
         }
-
-        for (int i = 7; i > x; i--) {
+        for (int i = x + 1; i < 8; i++) {
             if (board[y][i].isOccupied()) {
                 if (board[y][i].getOccupyingPiece().getColor() != this.color) {
                     lastXright = i;
-                } else lastXright = i - 1;
+                } else {
+                    lastXright = i - 1;
+                }
+                break;
             }
         }
 
