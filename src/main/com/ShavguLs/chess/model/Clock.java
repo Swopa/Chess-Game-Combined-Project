@@ -1,5 +1,8 @@
 package main.com.ShavguLs.chess.model;
 
+/* Keeps track of time for both players during the game.
+ Counts down and can tell when someone runs out of time. */
+
 public class Clock {
     private int hh;
     private int mm;

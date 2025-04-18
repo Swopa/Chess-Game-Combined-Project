@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+// The first screen players see. Lets them enter names and set the clock before playing.
+
 public class StartMenu implements Runnable{
     @Override
     public void run(){

@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+// Draws the chess board and handles mouse actions like dragging pieces.
+
 public class ChessBoardPanel extends JPanel implements MouseListener, MouseMotionListener {
     private static final int SQUARE_SIZE = 50; // Same size as legacy
 

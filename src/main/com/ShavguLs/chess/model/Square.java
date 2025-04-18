@@ -1,5 +1,7 @@
 package main.com.ShavguLs.chess.model;
 
+// Represents one square on the chess board. Knows its position and if it has a piece on it.
+
 public class Square {
     private final int color;
 

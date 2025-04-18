@@ -6,6 +6,9 @@ import javax.swing.*;
 import java.util.LinkedList;
 import java.util.List;
 
+/* Controls how the game works. Keeps track of the board, whose turn it is, and handles when players move pieces.
+Also manages the clock and checks if someone won. */
+
 public class GameController {
     private Board board;
     private CheckmateDetector checkmateDetector;

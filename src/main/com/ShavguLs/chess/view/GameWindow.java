@@ -9,6 +9,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/* Creates the main window where the game is played.
+Shows player names, the timer, and game controls. */
+
 public class GameWindow implements GameController.ClockCallback{
     private JFrame gameWindow;
 

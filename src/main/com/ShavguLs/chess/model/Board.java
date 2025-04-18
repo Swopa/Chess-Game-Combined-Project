@@ -3,6 +3,9 @@ package main.com.ShavguLs.chess.model;
 import java.util.LinkedList;
 import java.util.List;
 
+/* Represents the chess board with all the squares and pieces.
+Keeps lists of white and black pieces and knows whose turn it is. */
+
 public class Board {
     private Square[][] board;
 

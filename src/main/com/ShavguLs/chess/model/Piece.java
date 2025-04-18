@@ -6,6 +6,9 @@ import java.awt.Image;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 
+/* The parent class for all chess pieces. Has common methods for moving and tracking position.
+Defines helper methods for checking possible moves. */
+
 public abstract class Piece {
     private final int color;
 

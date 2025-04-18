@@ -3,6 +3,9 @@ package main.com.ShavguLs.chess.model;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+/* Checks if a king is in check or checkmate by looking at all possible moves.
+This is complex because it needs to check lots of different game situations. */
+
 public class CheckmateDetector {
     private Board board;
     private LinkedList<Piece> whitePieces;
