@@ -94,6 +94,7 @@ public class GameController {
         }
 
         Square destination = board.getSquareArray()[row][col];
+        Square origin = selectedPiece.getPosition();
 
         List<Square> legalMoves = selectedPiece.getLegalMoves(board);
         List<Square> allowableSquares = board.getAllowableSquares();
@@ -103,9 +104,25 @@ public class GameController {
             return false;
         }
 
-        boolean success = selectedPiece.move(destination);
+        boolean isCastling = false;
+        if (selectedPiece instanceof King){
+            int originX = origin.getXNum();
+            int desX = destination.getXNum();
+            if (Math.abs(desX - originX) == 2){
+                isCastling = true;
+            }
+        }
+
+        boolean success;
+
+        if (isCastling){
+            success = handleCastling((King) selectedPiece, destination);
+        }else {
+            success = selectedPiece.move(destination);
+        }
 
         if (success){
+            resetAllPieceDisplays();
             if (selectedPiece instanceof Pawn){
                 Pawn pawn = (Pawn) selectedPiece;
                 if (pawn.canPromote()){
@@ -118,6 +135,41 @@ public class GameController {
         selectedPiece = null;
 
         return success;
+    }
+
+    private void resetAllPieceDisplays(){
+        Square[][] squares = board.getSquareArray();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (squares[i][j].isOccupied()){
+                    squares[i][j].setDisplay(true);
+                }
+            }
+        }
+    }
+
+    private boolean handleCastling(King king, Square destination){
+        int kingY = king.getPosition().getYNum();
+        int kingX = king.getPosition().getXNum();
+        int destX = destination.getXNum();
+        Square[][] squares = board.getSquareArray();
+
+        if (destX > kingX){
+            Piece rook = squares[kingY][kingX + 3].getOccupyingPiece();
+            king.move(destination);
+            rook.move(squares[kingY][kingX + 1]);
+            destination.setDisplay(true);
+            squares[kingY][kingX+1].setDisplay(true);
+            return true;
+        }else{
+            Piece rook = squares[kingY][kingX - 4].getOccupyingPiece();
+            king.move(destination);
+            rook.move(squares[kingY][kingX-1]);
+            destination.setDisplay(true);
+            squares[kingY][kingX-1].setDisplay(true);
+
+            return true;
+        }
     }
 
     private void promotePawn(Pawn pawn) {

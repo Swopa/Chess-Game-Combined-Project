@@ -4,8 +4,23 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Rook extends Piece{
+    private boolean hasMoved;
+
     public Rook(int color, Square initSq, String img_file) {
         super(color, initSq, img_file);
+        this.hasMoved = false;
+    }
+
+    public boolean move(Square fin){
+        boolean result = super.move(fin);
+        if (result){
+            hasMoved = true;
+        }
+        return result;
+    }
+
+    public boolean hasMoved(){
+        return hasMoved;
     }
 
     @Override

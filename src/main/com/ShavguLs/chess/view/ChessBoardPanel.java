@@ -85,7 +85,6 @@ public class ChessBoardPanel extends JPanel implements MouseListener, MouseMotio
                 square.setDisplay(false);
             }
         }
-
         repaint();
     }
 
