@@ -6,8 +6,8 @@ import java.util.List;
 public class Rook extends Piece{
     private boolean hasMoved;
 
-    public Rook(int color, Square initSq, String img_file) {
-        super(color, initSq, img_file);
+    public Rook(int color, Square initSq) {
+        super(color, initSq);
         this.hasMoved = false;
     }
 
@@ -42,5 +42,9 @@ public class Rook extends Piece{
         }
 
         return legalMoves;
+    }
+
+    public void setHasMoved(boolean moved) {
+        this.hasMoved = moved;
     }
 }

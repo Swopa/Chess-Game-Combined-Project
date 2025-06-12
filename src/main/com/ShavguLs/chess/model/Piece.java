@@ -2,9 +2,6 @@ package main.com.ShavguLs.chess.model;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.awt.Image;
-import javax.imageio.ImageIO;
-import java.io.IOException;
 
 /* The parent class for all chess pieces. Has common methods for moving and tracking position.
 Defines helper methods for checking possible moves. */
@@ -14,22 +11,9 @@ public abstract class Piece {
 
     private Square currentSquare;
 
-    private Image img;
-
-    private final String imageFile;
-
-    public Piece(int color, Square initSq, String imgFile) {
+    public Piece(int color, Square initSq) {
         this.color = color;
         this.currentSquare = initSq;
-        this.imageFile = imgFile;
-
-        try {
-            if (this.img == null) {
-                this.img = ImageIO.read(getClass().getResource(imgFile));
-            }
-        } catch (IOException e) {
-            System.out.println("Fileb not found: " + e.getMessage());
-        }
     }
 
     public boolean move(Square fin) {
@@ -57,14 +41,6 @@ public abstract class Piece {
 
     public int getColor() {
         return color;
-    }
-
-    public Image getImage() {
-        return img;
-    }
-
-    public String getImageFile() {
-        return imageFile;
     }
 
     public int[] getLinearOccupations(Square[][] board, int x, int y) {

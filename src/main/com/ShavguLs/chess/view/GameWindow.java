@@ -9,9 +9,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/* Creates the main window where the game is played.
-Shows player names, the timer, and game controls. */
-
 public class GameWindow implements GameController.ClockCallback{
     private JFrame gameWindow;
 
@@ -31,7 +28,7 @@ public class GameWindow implements GameController.ClockCallback{
 
     public GameWindow(String blackName, String whiteName, int hh, int mm, int ss){
         gameWindow = new JFrame("Chess Game");
-        this.controller = new GameController(hh, mm, ss);
+        this.controller = new GameController(hh, mm, ss, this);
         try{
             Image blackImg = ImageIO.read(getClass().getResource("/images/bk.png"));
             gameWindow.setIconImage(blackImg);
@@ -73,7 +70,7 @@ public class GameWindow implements GameController.ClockCallback{
         JLabel b = new JLabel(bn);
 
         w.setHorizontalAlignment(JLabel.CENTER);
-        w.setVerticalAlignment(JLabel.CENTER);;
+        w.setVerticalAlignment(JLabel.CENTER);
         b.setHorizontalAlignment(JLabel.CENTER);
         b.setVerticalAlignment(JLabel.CENTER);
 
@@ -133,7 +130,7 @@ public class GameWindow implements GameController.ClockCallback{
                         "Confirm quit", JOptionPane.YES_NO_OPTION);
 
                 if (n == JOptionPane.YES_OPTION) {
-                    if (timer != null) timer.stop();
+                    controller.stopTimer();
                     gameWindow.dispose();
                 }
             }
@@ -148,6 +145,7 @@ public class GameWindow implements GameController.ClockCallback{
                         "Confirm new game", JOptionPane.YES_NO_OPTION);
 
                 if (n == JOptionPane.YES_OPTION) {
+                    controller.stopTimer();
                     SwingUtilities.invokeLater(new StartMenu());
                     gameWindow.dispose();
                 }
@@ -163,6 +161,15 @@ public class GameWindow implements GameController.ClockCallback{
                                 + "and dragging. The game will watch out for illegal\n"
                                 + "moves. You can win either by your opponent running\n"
                                 + "out of time or by checkmating your opponent.\n"
+                                + "\nSpecial moves:\n"
+                                + "• Castling: Move king two squares towards rook\n"
+                                + "• En passant: Capture pawn that just moved two squares\n"
+                                + "• Promotion: Pawn reaching the end becomes a new piece\n"
+                                + "\nThe game can end in a draw by:\n"
+                                + "• Stalemate (no legal moves but not in check)\n"
+                                + "• Insufficient material to checkmate\n"
+                                + "• 50 moves without capture or pawn move\n"
+                                + "• Same position repeated 3 times\n"
                                 + "\nGood luck, hope you enjoy the game!",
                         "How to play",
                         JOptionPane.PLAIN_MESSAGE);
@@ -180,7 +187,7 @@ public class GameWindow implements GameController.ClockCallback{
 
     public void checkmateOccurred (int c) {
         if (c == 0) {
-            if (timer != null) timer.stop();
+            controller.stopTimer();
             int n = JOptionPane.showConfirmDialog(
                     gameWindow,
                     "White wins by checkmate! Set up a new game? \n" +
@@ -193,7 +200,7 @@ public class GameWindow implements GameController.ClockCallback{
                 gameWindow.dispose();
             }
         } else {
-            if (timer != null) timer.stop();
+            controller.stopTimer();
             int n = JOptionPane.showConfirmDialog(
                     gameWindow,
                     "Black wins by checkmate! Set up a new game? \n" +
@@ -207,6 +214,56 @@ public class GameWindow implements GameController.ClockCallback{
             }
         }
     }
+
+    public void stalemateOccurred() {
+        controller.stopTimer();
+        int n = JOptionPane.showConfirmDialog(
+                gameWindow,
+                "The game is a draw by stalemate!\n" +
+                        "No legal moves available but king is not in check.\n" +
+                        "Set up a new game?",
+                "Draw - Stalemate",
+                JOptionPane.YES_NO_OPTION);
+
+        if (n == JOptionPane.YES_OPTION) {
+            SwingUtilities.invokeLater(new StartMenu());
+            gameWindow.dispose();
+        }
+    }
+
+    public void drawOccurred(String reason) {
+        controller.stopTimer();
+
+        String message;
+        switch (reason) {
+            case "insufficient material":
+                message = "The game is a draw!\n" +
+                        "Neither player has sufficient material to checkmate.";
+                break;
+            case "50-move rule":
+                message = "The game is a draw!\n" +
+                        "50 moves have been made without a capture or pawn move.";
+                break;
+            case "threefold repetition":
+                message = "The game is a draw!\n" +
+                        "The same position has occurred three times.";
+                break;
+            default:
+                message = "The game is a draw!";
+        }
+
+        int n = JOptionPane.showConfirmDialog(
+                gameWindow,
+                message + "\nSet up a new game?",
+                "Draw",
+                JOptionPane.YES_NO_OPTION);
+
+        if (n == JOptionPane.YES_OPTION) {
+            SwingUtilities.invokeLater(new StartMenu());
+            gameWindow.dispose();
+        }
+    }
+
     @Override
     public void updateWhiteClock(String time) {
         if (whiteTimeLabel != null) {
@@ -226,24 +283,16 @@ public class GameWindow implements GameController.ClockCallback{
     @Override
     public void timeOut(boolean whiteTimedOut) {
         String winner = whiteTimedOut ? "Black" : "White";
-        String loser = whiteTimedOut ? "White" : "Black";
 
         int n = JOptionPane.showConfirmDialog(
                 gameWindow,
-                winner + " wins by time! Play a new game? \n" + "Choosing \"NO\" quits the game.",
+                winner + " wins by time! Play a new game? \n" +
+                        "Choosing \"No\" lets you look at the final position.",
                 winner + " Wins!",
                 JOptionPane.YES_NO_OPTION);
 
         if (n == JOptionPane.YES_OPTION){
-            String blackName = ((JLabel)((JPanel)gameWindow.getContentPane().getComponent(0)).getComponent(1)).getText();
-            String whiteName = ((JLabel)((JPanel)gameWindow.getContentPane().getComponent(0)).getComponent(0)).getText();
-            int hh = controller.getWhiteClock().getHours();
-            int mm = controller.getWhiteClock().getMinutes();
-            int ss = controller.getWhiteClock().getSeconds();
-
-            new GameWindow(blackName, whiteName, hh, mm, ss);
-            gameWindow.dispose();
-        }else {
+            SwingUtilities.invokeLater(new StartMenu());
             gameWindow.dispose();
         }
     }

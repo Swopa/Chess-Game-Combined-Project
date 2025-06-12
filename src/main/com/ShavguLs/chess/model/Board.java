@@ -1,12 +1,12 @@
 package main.com.ShavguLs.chess.model;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /* Represents the chess board with all the squares and pieces.
 Keeps lists of white and black pieces and knows whose turn it is. */
 
 public class Board {
+    private List<GameObserver> observers = new ArrayList<>();
     private Square[][] board;
 
     private final LinkedList<Piece> blackPieces;
@@ -15,9 +15,11 @@ public class Board {
     private boolean whiteTurn;
     private CheckmateDetector checkmateDetector;
 
-    //todo
     private King whiteKing;
     private King blackKing;
+
+    private int halfMoveClock = 0;
+    private Map<String, Integer> positionHistory = new HashMap<>();
 
     public Board() {
         board = new Square[8][8];
@@ -43,45 +45,45 @@ public class Board {
 
     private void initializePieces() {
         for (int x = 0; x < 8; x++) {
-            Piece blackPawn = new Pawn(0, board[1][x], "/images/bpawn.png");
-            Piece whitePawn = new Pawn(1, board[6][x], "/images/wpawn.png");
+            Piece blackPawn = new Pawn(0, board[1][x]);
+            Piece whitePawn = new Pawn(1, board[6][x]);
 
             board[1][x].put(blackPawn);
             board[6][x].put(whitePawn);
         }
 
-        Piece blackQueen = new Queen(0, board[0][3], "/images/bqueen.png");
-        Piece whiteQueen = new Queen(1, board[7][3], "/images/wqueen.png");
+        Piece blackQueen = new Queen(0, board[0][3]);
+        Piece whiteQueen = new Queen(1, board[7][3]);
         board[0][3].put(blackQueen);
         board[7][3].put(whiteQueen);
 
-        blackKing = new King(0, board[0][4], "/images/bking.png");
-        whiteKing = new King(1, board[7][4], "/images/wking.png");
+        blackKing = new King(0, board[0][4]);
+        whiteKing = new King(1, board[7][4]);
         board[0][4].put(blackKing);
         board[7][4].put(whiteKing);
 
-        Piece blackRook1 = new Rook(0, board[0][0], "/images/brook.png");
-        Piece blackRook2 = new Rook(0, board[0][7], "/images/brook.png");
-        Piece whiteRook1 = new Rook(1, board[7][0], "/images/wrook.png");
-        Piece whiteRook2 = new Rook(1, board[7][7], "/images/wrook.png");
+        Piece blackRook1 = new Rook(0, board[0][0]);
+        Piece blackRook2 = new Rook(0, board[0][7]);
+        Piece whiteRook1 = new Rook(1, board[7][0]);
+        Piece whiteRook2 = new Rook(1, board[7][7]);
         board[0][0].put(blackRook1);
         board[0][7].put(blackRook2);
         board[7][0].put(whiteRook1);
         board[7][7].put(whiteRook2);
 
-        Piece blackKnight1 = new Knight(0, board[0][1], "/images/bknight.png");
-        Piece blackKnight2 = new Knight(0, board[0][6], "/images/bknight.png");
-        Piece whiteKnight1 = new Knight(1, board[7][1], "/images/wknight.png");
-        Piece whiteKnight2 = new Knight(1, board[7][6], "/images/wknight.png");
+        Piece blackKnight1 = new Knight(0, board[0][1]);
+        Piece blackKnight2 = new Knight(0, board[0][6]);
+        Piece whiteKnight1 = new Knight(1, board[7][1]);
+        Piece whiteKnight2 = new Knight(1, board[7][6]);
         board[0][1].put(blackKnight1);
         board[0][6].put(blackKnight2);
         board[7][1].put(whiteKnight1);
         board[7][6].put(whiteKnight2);
 
-        Piece blackBishop1 = new Bishop(0, board[0][2], "/images/bbishop.png");
-        Piece blackBishop2 = new Bishop(0, board[0][5], "/images/bbishop.png");
-        Piece whiteBishop1 = new Bishop(1, board[7][2], "/images/wbishop.png");
-        Piece whiteBishop2 = new Bishop(1, board[7][5], "/images/wbishop.png");
+        Piece blackBishop1 = new Bishop(0, board[0][2]);
+        Piece blackBishop2 = new Bishop(0, board[0][5]);
+        Piece whiteBishop1 = new Bishop(1, board[7][2]);
+        Piece whiteBishop2 = new Bishop(1, board[7][5]);
         board[0][2].put(blackBishop1);
         board[0][5].put(blackBishop2);
         board[7][2].put(whiteBishop1);
@@ -107,6 +109,7 @@ public class Board {
 
     public void switchTurn() {
         this.whiteTurn = !this.whiteTurn;
+        notifyTurnChanged();
     }
 
     public LinkedList<Piece> getWhitePieces() {
@@ -123,5 +126,27 @@ public class Board {
 
     public CheckmateDetector getCheckmateDetector() {
         return checkmateDetector;
+    }
+
+    public void addObserver(GameObserver observer) {
+        observers.add(observer);
+    }
+
+    public void notifyGameOver(boolean whiteWins, String reason) {
+        for (GameObserver observer : observers) {
+            observer.onGameOver(whiteWins, reason);
+        }
+    }
+
+    public void notifyTurnChanged() {
+        for (GameObserver observer : observers) {
+            observer.onTurnChanged(whiteTurn);
+        }
+    }
+
+    public void notifyPawnPromotion(Pawn pawn) {
+        for (GameObserver observer : observers) {
+            observer.onPawnPromotion(pawn);
+        }
     }
 }

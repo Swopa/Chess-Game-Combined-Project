@@ -33,13 +33,13 @@ public class CheckmateDetectorTest {
             }
         }
 
-        King whiteKing = new King(1, squares[7][7], "/images/wk.png");
+        King whiteKing = new King(1, squares[7][7]);
         squares[7][7].put(whiteKing);
 
-        King blackKing = new King(0, squares[0][0], "/images/bk.png");
+        King blackKing = new King(0, squares[0][0]);
         squares[0][0].put(blackKing);
 
-        Queen blackQueen = new Queen(0, squares[6][7], "/images/bq.png");
+        Queen blackQueen = new Queen(0, squares[6][7]);
         squares[6][7].put(blackQueen);
 
         board.getWhitePieces().clear();

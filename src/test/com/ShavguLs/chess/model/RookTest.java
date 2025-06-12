@@ -48,7 +48,7 @@ public class RookTest {
             }
         }
 
-        Rook whiteRook = new Rook(1, squares[4][4], "/images/wrook.png");
+        Rook whiteRook = new Rook(1, squares[4][4]);
         squares[4][4].put(whiteRook);
 
         List<Square> moves = whiteRook.getLegalMoves(testBoard);

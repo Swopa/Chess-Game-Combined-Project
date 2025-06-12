@@ -90,8 +90,11 @@ public class StartMenu implements Runnable{
             }
         });
 
+//        JButton testButton = new JButton("Test");
+
         buttonPanel.add(startButton);
         buttonPanel.add(quitButton);
+//        buttonPanel.add(testButton);
         startWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         startWindow.setVisible(true);
     }

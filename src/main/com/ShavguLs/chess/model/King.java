@@ -6,8 +6,8 @@ import java.util.List;
 public class King extends Piece{
     private boolean hasMoved;
 
-    public King(int color, Square initSq, String imgFile) {
-        super(color, initSq, imgFile);
+    public King(int color, Square initSq) {
+        super(color, initSq);
         this.hasMoved = false;
     }
 
@@ -21,6 +21,10 @@ public class King extends Piece{
 
     public boolean hasMoved(){
         return hasMoved;
+    }
+
+    public void setHasMoved(boolean moved) {
+        this.hasMoved = moved;
     }
 
     @Override

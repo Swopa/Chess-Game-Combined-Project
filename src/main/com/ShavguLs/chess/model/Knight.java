@@ -4,8 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Knight extends Piece{
-    public Knight(int color, Square initSq, String imgFile){
-        super(color, initSq, imgFile);
+    public Knight(int color, Square initSq){
+        super(color, initSq);
     }
 
     @Override
@@ -18,7 +18,7 @@ public class Knight extends Piece{
 
         for (int i = 2; i > -3; i--) {
             for (int k = 2; k > -3; k--) {
-                if(Math.abs(i) == 2 ^ Math.abs(k) == 2) {
+                if((Math.abs(i) == 2 && Math.abs(k) == 1) || (Math.abs(i) == 1 && Math.abs(k) == 2)) {
                     if (k != 0 && i != 0) {
                         try {
                             Square targetSquare = board[y + k][x + i];

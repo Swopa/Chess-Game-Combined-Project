@@ -19,14 +19,20 @@ public class Clock {
     }
 
     public void decr() {
-        if (this.mm == 0 && this.ss == 0) {
-            this.ss = 59;
-            this.mm = 59;
-            this.hh--;
-        } else if (this.ss == 0) {
-            this.ss = 59;
-            this.mm--;
-        } else this.ss--;
+        if (this.ss == 0) {
+            if (this.mm == 0) {
+                if (this.hh > 0) {
+                    this.hh--;
+                    this.mm = 59;
+                    this.ss = 59;
+                }
+            } else {
+                this.mm--;
+                this.ss = 59;
+            }
+        } else {
+            this.ss--;
+        }
     }
 
     public String getTime() {
