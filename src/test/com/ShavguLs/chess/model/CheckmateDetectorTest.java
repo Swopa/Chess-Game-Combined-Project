@@ -1,4 +1,4 @@
-package test.com.ShavguLs.chess.model;
+package test.com.ShavguLs.chess.model_old;
 
 import main.com.ShavguLs.chess.model.*;
 import org.junit.Test;

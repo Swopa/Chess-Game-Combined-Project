@@ -1,6 +1,5 @@
-package test.com.ShavguLs.chess.model;
+package test.com.ShavguLs.chess.model_old;
 
-import com.sun.security.jgss.GSSUtil;
 import main.com.ShavguLs.chess.model.Board;
 import main.com.ShavguLs.chess.model.Pawn;
 import main.com.ShavguLs.chess.model.Square;

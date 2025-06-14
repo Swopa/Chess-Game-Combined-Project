@@ -1,4 +1,4 @@
-package main.com.ShavguLs.chess.model;
+package main.com.ShavguLs.chess.model_old;
 
 // Represents one square on the chess board. Knows its position and if it has a piece on it.
 

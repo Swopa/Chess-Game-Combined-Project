@@ -1,4 +1,4 @@
-package main.com.ShavguLs.chess.model;
+package main.com.ShavguLs.chess.model_old;
 
 import java.util.*;
 

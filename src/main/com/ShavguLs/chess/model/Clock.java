@@ -1,4 +1,4 @@
-package main.com.ShavguLs.chess.model;
+package main.com.ShavguLs.chess.model_old;
 
 /* Keeps track of time for both players during the game.
  Counts down and can tell when someone runs out of time. */
