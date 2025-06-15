@@ -1,4 +1,3 @@
-// In: main/com/ShavguLs/chess/logic/MoveInterpreter.java
 package main.com.ShavguLs.chess.logic;
 
 import java.util.ArrayList;
@@ -45,11 +44,11 @@ public class MoveInterpreter {
         move = move.replaceAll("[+#x]", "");
         String dest = move.substring(move.length() - 2);
         int destCol = dest.charAt(0) - 'a';
-        // --- THE FIX IS HERE: Standardize on the correct coordinate system ---
+        // Standardize on the correct coordinate system
         int destRow = 7 - (Character.getNumericValue(dest.charAt(1)) - 1);
         String disambiguation = move.substring(startIndex, move.length() - 2);
 
-        // --- We will now call YOUR findSourceSquare method, but the one with fixed coordinates ---
+        // source
         int[] source = findSourceSquare(pieceChar, destRow, destCol, disambiguation);
 
         if (source == null) {
@@ -79,7 +78,7 @@ public class MoveInterpreter {
         }
     }
 
-    // --- This is YOUR findSourceSquare method, but with fixed coordinate math ---
+    // Finds Source square for move
     int[] findSourceSquare(char pieceChar, int destRow, int destCol, String disambiguation) {
         System.out.printf("Looking for move to (%d, %d) = %c%d with disambiguation [%s]\n",
                 destRow, destCol, (char) (destCol + 'a'), 8 - destRow, disambiguation);
@@ -94,7 +93,7 @@ public class MoveInterpreter {
                     continue;
                 }
 
-                // --- YOUR DISAMBIGUATION LOGIC, BUT WITH CORRECTED COORDINATES ---
+                // Disambiguation Logic
                 if (!disambiguation.isEmpty()) {
                     if (disambiguation.length() == 2) {
                         char fileChar = disambiguation.charAt(0);
@@ -113,7 +112,7 @@ public class MoveInterpreter {
                     }
                 }
 
-                // --- IMPORTANT ADDITION: Check if move leaves king in check ---
+                //Check if move leaves king in check ---
                 Board simulated = board.copy();
                 simulated.movePiece(row, col, destRow, destCol);
                 if (simulated.isKingInCheck(whiteToMove)) {

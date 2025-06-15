@@ -8,12 +8,6 @@ public class Board {
         //setUpInitialPosition();
     }
 
-    public enum MoveResult {
-        SUCCESS,
-        PROMOTION_SUCCESS, // A successful move that resulted in a pawn reaching the final rank
-        ILLEGAL
-    }
-
     public void setPiece(int row, int col, Piece piece){
         board[row][col] = piece;
     }
@@ -42,7 +36,6 @@ public class Board {
             return false;
         }
 
-        // --- THE FIX IS HERE: SPECIAL VALIDATION FOR KING MOVES ---
         // A king can't move to a square that is under attack by the opponent.
         if (pieceToMove instanceof King) {
             // Check if the destination square is attacked by the OTHER player
@@ -51,7 +44,7 @@ public class Board {
                 return false;
             }
         }
-        // --- END OF THE FIX ---
+
 
         // SPECIAL CASE: CASTLING
         boolean isCastleAttempt = pieceToMove instanceof King && Math.abs(destCol - srcCol) == 2;
@@ -73,6 +66,7 @@ public class Board {
         this.movePiece(srcRow, srcCol, destRow, destCol);
         Piece movedPiece = getPieceAt(destRow, destCol); // Get the piece that just moved
         if (movedPiece instanceof Pawn) {
+            //TODO Piece has to become whatever user chooses
             if ( (movedPiece.isWhite() && destRow == 0) || (!movedPiece.isWhite() && destRow == 7) ) {
                 // It's a promotion!
                 // For now, let's just auto-promote to a Queen.
@@ -122,8 +116,7 @@ public class Board {
     }
 
 
-    // In: main/com/ShavguLs/chess/logic/Board.java
-// REPLACE your existing isKingInCheck method with this one.
+
 
     public boolean isKingInCheck(boolean isWhiteKing) {
         int kingRow = -1, kingCol = -1;
@@ -201,13 +194,12 @@ public class Board {
     }
 
 
+    //Checks every piece if it is attacking certain square. Is used in king check logic too
     public boolean isSquareAttacked(int row, int col, boolean byWhite) {
         for (int r = 0; r < 8; r++) {
             for (int c = 0; c < 8; c++) {
                 Piece attacker = board[r][c];
                 if (attacker != null && attacker.isWhite() == byWhite) {
-                    // --- THE FIX IS HERE ---
-                    // We now ask the piece if it ATTACKS the square, not if it can MOVE there.
                     if (attacker.isAttackingSquare(r, c, row, col, board)) {
                         System.out.println("DEBUG (isSquareAttacked): Square (" + row + "," + col + ") IS attacked by "
                                 + attacker.getClass().getSimpleName() + " at (" + r + "," + c + ")");
@@ -220,7 +212,7 @@ public class Board {
         return false;
     }
 
-
+    //Copies board. Is used for king check logic
     public Board copy() {
         Board newBoard = new Board();
         newBoard.clearBoard(); // prevents overwriting via setup
@@ -236,7 +228,7 @@ public class Board {
         return newBoard;
     }
 
-
+    //clears board
     public void clearBoard() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -245,64 +237,7 @@ public class Board {
         }
     }
 
-
-    // In: main/com/ShavguLs/chess/logic/Board.java
-// REPLACE your existing hasLegalMoves method with this one.
-
-
-
-
-    public String generateFen() {
-        StringBuilder fen = new StringBuilder();
-        for (int row = 0; row < 8; row++) {
-            int emptySquareCount = 0;
-            for (int col = 0; col < 8; col++) {
-                Piece piece = getPieceAt(row, col);
-                if (piece == null) {
-                    emptySquareCount++;
-                } else {
-                    // If we have counted empty squares, append the number first
-                    if (emptySquareCount > 0) {
-                        fen.append(emptySquareCount);
-                        emptySquareCount = 0;
-                    }
-
-                    // Determine the piece character using instanceof
-                    char symbol = ' ';
-                    if (piece instanceof Pawn)   { symbol = 'p'; }
-                    else if (piece instanceof Knight) { symbol = 'n'; }
-                    else if (piece instanceof Bishop) { symbol = 'b'; }
-                    else if (piece instanceof Rook)   { symbol = 'r'; }
-                    else if (piece instanceof Queen)  { symbol = 'q'; }
-                    else if (piece instanceof King)   { symbol = 'k'; }
-
-                    // Append the correct case (uppercase for white, lowercase for black)
-                    fen.append(piece.isWhite() ? Character.toUpperCase(symbol) : symbol);
-                }
-            }
-            // If the row ended with empty squares, append the count
-            if (emptySquareCount > 0) {
-                fen.append(emptySquareCount);
-            }
-            // Add a slash after each row, except for the last one
-            if (row < 7) {
-                fen.append('/');
-            }
-        }
-        return fen.toString();
-    }
-
-
-    // In: main/com/ShavguLs/chess/logic/Board.java
-// Add this new method to the class.
-
-    /**
-     * Determines if the specified side has any legal moves available on the current board.
-     * A move is legal if it follows piece rules and does not result in the player's own king being in check.
-     *
-     * @param isWhiteSide The side to check (true for White, false for Black).
-     * @return true if there is at least one legal move, false otherwise.
-     */
+    //Checks if board has any legal moves for stalemate
     public boolean hasLegalMoves(boolean isWhiteSide) {
         // Loop through every square on the board
         for (int r = 0; r < 8; r++) {
