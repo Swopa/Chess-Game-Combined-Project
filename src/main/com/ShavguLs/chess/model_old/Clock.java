@@ -7,11 +7,14 @@ public class Clock {
     private int hh;
     private int mm;
     private int ss;
+    private int totalSeconds;
+    private final int initialSeconds;
 
     public Clock(int hh, int mm, int ss) {
         this.hh = hh;
         this.mm = mm;
         this.ss = ss;
+        this.initialSeconds = this.totalSeconds;
     }
 
     public boolean outOfTime() {
@@ -41,6 +44,10 @@ public class Clock {
         String fSecs = String.format("%02d", this.ss);
         String fTime = fHrs + ":" + fMins + ":" + fSecs;
         return fTime;
+    }
+
+    public int getInitialSeconds() {
+        return initialSeconds;
     }
 
     public int getHours(){

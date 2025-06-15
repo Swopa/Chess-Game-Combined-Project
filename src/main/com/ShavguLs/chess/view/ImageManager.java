@@ -1,21 +1,27 @@
+// In: main/com/ShavguLs/chess/view/ImageManager.java
+// Replaces the ENTIRE old file.
+
 package main.com.ShavguLs.chess.view;
 
-import main.com.ShavguLs.chess.model.Piece;
+// IMPORT YOUR LOGIC.PIECE, NOT THE OLD ONE
+import main.com.ShavguLs.chess.logic.Piece;
 
+import javax.imageio.ImageIO;
 import java.awt.Image;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.imageio.ImageIO;
 
 public class ImageManager {
     private static ImageManager instance;
-    private Map<String, Image> images = new HashMap<>();
+    // The Map now uses a Character (the FEN char) as its key
+    private final Map<Character, Image> images = new HashMap<>();
 
     private ImageManager() {
         loadAllImages();
     }
 
-    public static ImageManager getInstance() {
+    public static synchronized ImageManager getInstance() {
         if (instance == null) {
             instance = new ImageManager();
         }
@@ -23,34 +29,49 @@ public class ImageManager {
     }
 
     private void loadAllImages() {
-        // Load all piece images
-        loadImage("bking", "/images/bking.png");
-        loadImage("bqueen", "/images/bqueen.png");
-        loadImage("brook", "/images/brook.png");
-        loadImage("bbishop", "/images/bbishop.png");
-        loadImage("bknight", "/images/bknight.png");
-        loadImage("bpawn", "/images/bpawn.png");
+        // Load images using their standard FEN character as the key
+        // White Pieces (UPPERCASE)
+        loadImage('K', "/images/wking.png");
+        loadImage('Q', "/images/wqueen.png");
+        loadImage('R', "/images/wrook.png");
+        loadImage('B', "/images/wbishop.png");
+        loadImage('N', "/images/wknight.png");
+        loadImage('P', "/images/wpawn.png");
 
-        loadImage("wking", "/images/wking.png");
-        loadImage("wqueen", "/images/wqueen.png");
-        loadImage("wrook", "/images/wrook.png");
-        loadImage("wbishop", "/images/wbishop.png");
-        loadImage("wknight", "/images/wknight.png");
-        loadImage("wpawn", "/images/wpawn.png");
+        // Black Pieces (lowercase)
+        loadImage('k', "/images/bking.png");
+        loadImage('q', "/images/bqueen.png");
+        loadImage('r', "/images/brook.png");
+        loadImage('b', "/images/bbishop.png");
+        loadImage('n', "/images/bknight.png");
+        loadImage('p', "/images/bpawn.png");
     }
 
-    private void loadImage(String key, String path) {
+    private void loadImage(Character key, String path) {
         try {
             Image img = ImageIO.read(getClass().getResource(path));
-            images.put(key, img);
-        } catch (Exception e) {
-            System.err.println("Could not load image: " + path);
+            if (img != null) {
+                images.put(key, img);
+            } else {
+                System.err.println("Could not load image resource: " + path);
+            }
+        } catch (IOException | IllegalArgumentException e) {
+            System.err.println("Exception while loading image: " + path);
+            e.printStackTrace();
         }
     }
 
+    /**
+     * Gets the corresponding image for a given piece.
+     * This method now accepts the new logic.Piece.
+     * @param piece The piece object from the logic package.
+     * @return The Image for the piece, or null if not found.
+     */
     public Image getPieceImage(Piece piece) {
-        String color = piece.getColor() == 1 ? "w" : "b";
-        String type = piece.getClass().getSimpleName().toLowerCase();
-        return images.get(color + type);
+        if (piece == null) {
+            return null;
+        }
+        // We use the handy getFenChar() method we created earlier!
+        return images.get(piece.getFenChar());
     }
 }

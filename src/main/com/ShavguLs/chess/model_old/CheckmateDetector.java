@@ -1,4 +1,4 @@
-package main.com.ShavguLs.chess.model_old;
+package main.com.ShavguLs.chess.model;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;

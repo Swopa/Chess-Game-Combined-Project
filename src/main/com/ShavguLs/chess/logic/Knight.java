@@ -1,4 +1,6 @@
-public class Knight extends Piece{
+package main.com.ShavguLs.chess.logic;
+
+public class Knight extends Piece {
     public Knight(boolean isWhite) {
         super(isWhite);
     }
@@ -7,6 +9,11 @@ public class Knight extends Piece{
         Knight copy = new Knight(this.isWhite);
         copy.hasMoved = this.hasMoved;
         return copy;
+    }
+
+    @Override
+    public char getFenChar() {
+        return isWhite ? 'N' : 'n';
     }
 
     @Override

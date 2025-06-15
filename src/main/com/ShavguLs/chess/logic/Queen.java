@@ -1,3 +1,5 @@
+package main.com.ShavguLs.chess.logic;
+
 public class Queen extends Piece{
 
 
@@ -11,12 +13,24 @@ public class Queen extends Piece{
         return copy;
     }
 
+
+    @Override
+    public char getFenChar() {
+        return isWhite ? 'Q' : 'q';
+    }
+
+
     @Override
     boolean isValidMove(int srcRow, int srcCol, int destRow, int destCol, Piece[][] board)  {
 
         //Queen just combines bishop and rook logic
         int rowDiff = Math.abs(srcRow - destRow);
         int colDiff = Math.abs(srcCol - destCol);
+
+
+        if (srcRow == destRow && srcCol == destCol) {
+            return false;
+        }
 
 
         if(rowDiff == colDiff){

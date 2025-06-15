@@ -1,29 +1,43 @@
+// In: main/com/ShavguLs/chess/view/PromotionHandler.java
+// Replaces the ENTIRE old file.
+
 package main.com.ShavguLs.chess.view;
 
-import main.com.ShavguLs.chess.model.*;
+// Import all the piece types from YOUR logic package
+import main.com.ShavguLs.chess.logic.Piece;
+import main.com.ShavguLs.chess.logic.Queen;
+import main.com.ShavguLs.chess.logic.Rook;
+import main.com.ShavguLs.chess.logic.Bishop;
+import main.com.ShavguLs.chess.logic.Knight;
+
 import javax.swing.JOptionPane;
 
 public class PromotionHandler {
 
-    public static Piece handlePawnPromotion(Pawn pawn) {
+    /**
+     * Shows a dialog to the user to choose a piece for promotion.
+     * This method is now decoupled from the board and position.
+     *
+     * @param isWhite The color of the pawn being promoted. True for white, false for black.
+     * @return The new Piece object chosen by the user.
+     */
+    public static Piece getPromotionChoice(boolean isWhite) {
         String[] options = {"Queen", "Rook", "Bishop", "Knight"};
         int choice = JOptionPane.showOptionDialog(null,
-                "Choose promotion piece",
+                "Choose a piece for promotion:",
                 "Pawn Promotion",
                 JOptionPane.DEFAULT_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null, options, options[0]);
 
-        int color = pawn.getColor();
-        Square position = pawn.getPosition();
-        String imgPrefix = (color == 1) ? "/images/w" : "/images/b";
-
+        // Create the new piece based on the user's choice and the pawn's color.
+        // This now calls the constructors of YOUR logic.Piece classes.
         switch (choice) {
-            case 0: return new Queen(color, position);
-            case 1: return new Rook(color, position);
-            case 2: return new Bishop(color, position);
-            case 3: return new Knight(color, position);
-            default: return new Queen(color, position);
+            case 0:  return new Queen(isWhite);
+            case 1:  return new Rook(isWhite);
+            case 2:  return new Bishop(isWhite);
+            case 3:  return new Knight(isWhite);
+            default: return new Queen(isWhite); // Default to Queen if the dialog is closed
         }
     }
 }

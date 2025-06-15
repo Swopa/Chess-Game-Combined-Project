@@ -1,127 +1,121 @@
+// In: src/main/com/ShavguLs/chess/logic/Main.java
+package main.com.ShavguLs.chess.logic;
+
 import java.io.IOException;
 import java.util.List;
-/*
-public class Main {
-    public static void main(String[] args) {
-        String pgn = "[Event \"Wch U10\"]\n" +
-                "[Site \"Duisburg\"]\n" +
-                "[Date \"1992.??.??\"]\n" +
-                "[Round \"5\"]\n" +
-                "[White \"Bacrot, Etienne\"]\n" +
-                "[Black \"Vallejo Pons, Francisco\"]\n" +
-                "[Result \"1/2-1/2\"]\n" +
-                "[WhiteElo \"\"]\n" +
-                "[BlackElo \"\"]\n" +
-                "[ECO \"A89\"]\n" +
-                "\n" +
-                "1.d4 f5 2.Nf3 Nf6 3.g3 g6 4.Bg2 Bg7 5.c4 O-O 6.O-O d6 7.Nc3 Nc6 8.d5 Ne5\n" +
-                "9.Nxe5 dxe5 10.e4 f4 11.b3 g5 12.Qe2 a6 13.Bd2 Qe8 14.Rac1 Qg6 15.c5 Qh6\n" +
-                "16.f3 fxg3 17.hxg3 Nh5 18.Qf2 Qg6 19.Be3 g4 20.f4 exf4 21.gxf4 g3 22.Qd2 Nf6\n" +
-                "23.e5 Ng4 24.Rf3 Nh2 25.d6 Nxf3+ 26.Bxf3 cxd6 27.Nd5 Rf7 28.cxd6 Bg4 29.Bxg4 Qxg4\n" +
-                "30.Nxe7+ Kh8 31.d7 Rff8 32.Rc8 Raxc8 33.dxc8=Q Rxc8 34.Nxc8 Qxc8 35.Kg2 h5\n" +
-                "36.Kxg3 Qg4+ 37.Kh2 Qh4+ 38.Kg1 Qg3+ 39.Kf1 Qf3+ 40.Qf2 Qh1+ 41.Ke2 Qb1 42.Kf3 Qf5\n" +
-                "43.Ke2 Kh7 44.Qf3 b5 45.Bd2 h4 46.Be1 h3 47.Kf2 Bh6 48.Qb7+ Kg6 49.Qc6+ Kh5\n" +
-                "50.Qf3+ Kg6 51.Qc6+ Kh7 52.Qb7+ Bg7 53.Qf3 h2 54.Kg2  1/2-1/2\n";
-
-        List<String> moves = PGNParser.parseMoves(pgn);
-
-        System.out.println("Game Start:");
-        printBoard(new Board());
-
-        Board board = new Board();
-        MoveInterpreter interpreter = new MoveInterpreter(board);
-
-        for (String move : moves) {
-            System.out.println("\nMove: " + move);
-
-
-            try {
-                interpreter.interpretMove(move);
-            } catch (IllegalMoveException e){
-                System.out.println("Game Over: " + e.getMessage());
-                break;
-            }
-
-
-            // Print the board after each move
-            printBoard(board);
-        }
-
-        System.out.println("Game Over!");
-    }
-
-    public static void printBoard(Board board) {
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                Piece piece = board.board[row][col];
-                if (piece == null) {
-                    System.out.print(" . ");
-                } else {
-                    char symbol;
-                    if (piece instanceof Knight) {
-                        symbol = 'N';
-                    } else {
-                        symbol = piece.getClass().getSimpleName().charAt(0);
-                    }
-                    System.out.print(symbol + (piece.isWhite ? "W" : "B") + " ");
-                }
-            }
-            System.out.println();
-        }
-    }
-}
-*/
-
 
 public class Main {
+
     public static void main(String[] args) {
+        // --- CONFIGURATION ---
+        // IMPORTANT: Change this to the actual path of your PGN file.
+        // Use double backslashes on Windows, or a single forward slash.
+        String pgnFilePath = "src/Tbilisi2015.pgn";
+
         try {
-            String filePath = "src\\Tbilisi2015.pgn";
-            List<String> games = PGNFileReader.readGames(filePath);
+            // 1. Read all games from the file using YOUR PGNFileReader.
+            // This calls your PGNFileReader.readGames() method.
+            System.out.println("Reading games from: " + pgnFilePath);
+            List<String> allGames = PGNFileReader.readGames(pgnFilePath);
+            System.out.println("Found " + allGames.size() + " games to test.");
 
-            int gameCount = 1;
-            for (String game : games) {
-                System.out.println("=== Game " + gameCount + " Start ===");
-                List<String> moves = PGNParser.parseMoves(game);
+            int gamesPassed = 0;
+            int gamesFailed = 0;
 
-                Board board = new Board();
-                MoveInterpreter interpreter = new MoveInterpreter(board);
+            // 2. Loop through each game and test it
+            for (int i = 0; i < allGames.size(); i++) {
+                String pgnGame = allGames.get(i);
+                System.out.printf("\n========================================\n");
+                System.out.printf("   TESTING GAME #%d / %d\n", (i + 1), allGames.size());
+                System.out.printf("========================================\n");
 
-                System.out.println("Initial Position:");
-                printBoard(board);
+                // We pass each game string to our test runner method
+                boolean gameSucceeded = runSingleGameTest(pgnGame);
 
-                for (String move : moves) {
-                    System.out.println("\nMove: " + move);
-                    try {
-                        interpreter.interpretMove(move);
-                    } catch (IllegalMoveException e) {
-                        System.out.println("Illegal move detected: " + e.getMessage());
-                        break;
-                    }
-                    printBoard(board);
+                if (gameSucceeded) {
+                    gamesPassed++;
+                    System.out.println("\n--- GAME #" + (i + 1) + " PASSED ---");
+                } else {
+                    gamesFailed++;
+                    System.err.println("\n--- GAME #" + (i + 1) + " FAILED ---");
+                    // OPTIONAL: Stop after the first failure.
+                    // To enable this, uncomment the line below.
+                    // break;
                 }
-
-                System.out.println("=== Game " + gameCount + " End ===\n");
-                gameCount++;
             }
+
+            // 3. Print a final summary of the results
+            System.out.printf("\n\n========================================\n");
+            System.out.println("           TESTING COMPLETE");
+            System.out.println("----------------------------------------");
+            System.out.println("  Games Passed: " + gamesPassed);
+            System.out.println("  Games Failed: " + gamesFailed);
+            System.out.println("========================================\n");
 
         } catch (IOException e) {
-            System.err.println("Error reading PGN file: " + e.getMessage());
+            System.err.println("FATAL ERROR: Could not read the PGN file at: " + pgnFilePath);
+            e.printStackTrace();
         }
     }
 
+    /**
+     * Executes the test for a single PGN game string.
+     * @param pgnGame The string containing one full PGN game.
+     * @return true if the game was processed successfully, false otherwise.
+     */
+    private static boolean runSingleGameTest(String pgnGame) {
+        Board board = new Board();
+        board.setupStandardBoard();
+
+        MoveInterpreter interpreter = new MoveInterpreter(board);
+
+        // Use YOUR PGNParser to get the list of moves for the current game.
+        // This calls your PGNParser.parseMoves() method.
+        List<String> moves = PGNParser.parseMoves(pgnGame);
+
+        for (String move : moves) {
+            try {
+                interpreter.interpretMove(move);
+            } catch (IllegalMoveException e) {
+                System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                System.err.println("FAILURE ON MOVE: " + move);
+                System.err.println("ERROR: " + e.getMessage());
+                System.err.println("--- Board State at Failure ---");
+                printBoard(board); // Print the board to see the context
+                System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                return false; // This game failed
+            }
+        }
+        return true;
+
+    }
+
+    /**
+     * Helper method to print the board state to the console for visual checking.
+     */
     public static void printBoard(Board board) {
+        System.out.println("   a  b  c  d  e  f  g  h");
+        System.out.println("  +------------------------+");
         for (int row = 0; row < 8; row++) {
+            System.out.print((8 - row) + " |");
             for (int col = 0; col < 8; col++) {
-                Piece piece = board.board[row][col];
-                if (piece == null) {
+                Piece p = board.getPieceAt(row, col);
+                if (p == null) {
                     System.out.print(" . ");
                 } else {
-                    char symbol = piece instanceof Knight ? 'N' : piece.getClass().getSimpleName().charAt(0);
-                    System.out.print(symbol + (piece.isWhite ? "W" : "B") + " ");
+                    char pieceChar = ' ';
+                    if (p instanceof Pawn)   { pieceChar = 'p'; }
+                    else if (p instanceof Knight) { pieceChar = 'n'; }
+                    else if (p instanceof Bishop) { pieceChar = 'b'; }
+                    else if (p instanceof Rook)   { pieceChar = 'r'; }
+                    else if (p instanceof Queen)  { pieceChar = 'q'; }
+                    else if (p instanceof King)   { pieceChar = 'k'; }
+                    System.out.print(" " + (p.isWhite() ? Character.toUpperCase(pieceChar) : pieceChar) + " ");
                 }
             }
-            System.out.println();
+            System.out.println("| " + (8 - row));
         }
+        System.out.println("  +------------------------+");
+        System.out.println("   a  b  c  d  e  f  g  h");
     }
 }

@@ -1,157 +1,119 @@
+// In: main/com/ShavguLs/chess/view/ChessBoardPanel.java
+// Replaces the ENTIRE old file.
+
 package main.com.ShavguLs.chess.view;
 
 import main.com.ShavguLs.chess.controller.GameController;
-import main.com.ShavguLs.chess.model.*;
-import main.com.ShavguLs.chess.view.ImageManager;
+import main.com.ShavguLs.chess.logic.Piece; // <-- Import YOUR Piece class
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-// Draws the chess board and handles mouse actions like dragging pieces.
-
-public class ChessBoardPanel extends JPanel implements MouseListener, MouseMotionListener {
+public class ChessBoardPanel extends JPanel {
     private static final int SQUARE_SIZE = 50;
 
     private final GameController controller;
     private final GameWindow gameWindow;
 
-    private Piece currentPiece;
-    private int currentX;
-    private int currentY;
-    private Square originalSquare;
+    // State for visually dragging a piece
+    private Piece pieceBeingDragged;
+    private int dragX, dragY;
 
     public ChessBoardPanel(GameWindow gameWindow, GameController controller) {
         this.controller = controller;
         this.gameWindow = gameWindow;
+        this.setPreferredSize(new Dimension(SQUARE_SIZE * 8, SQUARE_SIZE * 8));
 
-        setLayout(null);
-
-        addMouseListener(this);
-        addMouseMotionListener(this);
-
-        setPreferredSize(new Dimension(400, 400));
-        setMaximumSize(new Dimension(400, 400));
-        setMinimumSize(getPreferredSize());
-        setSize(new Dimension(400, 400));
+        MouseHandler mouseHandler = new MouseHandler();
+        this.addMouseListener(mouseHandler);
+        this.addMouseMotionListener(mouseHandler);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Square[][] squares = controller.getBoard().getSquareArray();
 
-        for (int y = 0; y < 8; y++) {
-            for (int x = 0; x < 8; x++) {
-                int xPos = x * SQUARE_SIZE;
-                int yPos = y * SQUARE_SIZE;
+        // Draw the checkerboard pattern
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                int xPos = col * SQUARE_SIZE;
+                int yPos = row * SQUARE_SIZE;
 
-                if ((x + y) % 2 == 0) {
-                    g.setColor(new Color(221, 192, 127));
+                if ((row + col) % 2 == 0) {
+                    g.setColor(new Color(221, 192, 127)); // Light square
                 } else {
-                    g.setColor(new Color(101, 67, 33));
+                    g.setColor(new Color(101, 67, 33)); // Dark square
                 }
                 g.fillRect(xPos, yPos, SQUARE_SIZE, SQUARE_SIZE);
 
-                Square square = squares[y][x];
-                if (square.isOccupied() && square.getDisplay()) {
-                    Piece piece = square.getOccupyingPiece();
-                    if (piece != currentPiece) {
-                        Image img = ImageManager.getInstance().getPieceImage(piece);
-                        if (img != null) {
-                            g.drawImage(img, xPos, yPos, SQUARE_SIZE, SQUARE_SIZE, null);
-                        }
+                // Draw the piece from the logic board
+                Piece piece = controller.getLogicBoard().getPieceAt(row, col);
+                if (piece != null) {
+                    // Don't draw the piece if it's the one we are currently dragging
+                    if (piece != pieceBeingDragged) {
+                        drawPiece(g, piece, xPos, yPos);
                     }
                 }
             }
         }
 
-        if (currentPiece != null) {
-            if ((currentPiece.getColor() == 1 && controller.getBoard().getTurn()) ||
-                    (currentPiece.getColor() == 0 && !controller.getBoard().getTurn())) {
-                Image img = ImageManager.getInstance().getPieceImage(currentPiece);
-                if (img != null) {
-                    g.drawImage(img, currentX - SQUARE_SIZE/2, currentY - SQUARE_SIZE/2,
-                            SQUARE_SIZE, SQUARE_SIZE, null);
-                }
-            }
+        // If a piece is being dragged, draw it at the mouse cursor's position
+        if (pieceBeingDragged != null) {
+            drawPiece(g, pieceBeingDragged, dragX - SQUARE_SIZE / 2, dragY - SQUARE_SIZE / 2);
         }
     }
 
-    @Override
-    public void mousePressed(MouseEvent e) {
-        currentX = e.getX();
-        currentY = e.getY();
+    private void drawPiece(Graphics g, Piece piece, int x, int y) {
+        Image img = ImageManager.getInstance().getPieceImage(piece);
+        if (img != null) {
+            g.drawImage(img, x, y, SQUARE_SIZE, SQUARE_SIZE, null);
+        }
+    }
 
-        int col = currentX / SQUARE_SIZE;
-        int row = currentY / SQUARE_SIZE;
+    // Using an inner class for mouse handling to keep the code organized
+    private class MouseHandler extends MouseAdapter {
+        @Override
+        public void mousePressed(MouseEvent e) {
+            int col = e.getX() / SQUARE_SIZE;
+            int row = e.getY() / SQUARE_SIZE;
 
-        if (col >= 0 && col < 8 && row >= 0 && row < 8) {
             if (controller.selectPiece(row, col)) {
-                Square square = controller.getBoard().getSquareArray()[row][col];
-                currentPiece = square.getOccupyingPiece();
-                originalSquare = square; // FIXED
-                square.setDisplay(false);
+                // If selection is successful, it means we picked up a valid piece.
+                // We can now start dragging it.
+                pieceBeingDragged = controller.getLogicBoard().getPieceAt(row, col);
+                dragX = e.getX();
+                dragY = e.getY();
+                repaint();
             }
         }
-        repaint();
-    }
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        if (currentPiece == null) {
-            return;
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            if (pieceBeingDragged != null) {
+                int col = e.getX() / SQUARE_SIZE;
+                int row = e.getY() / SQUARE_SIZE;
+
+                // Tell the controller to try and make the move
+                controller.makeMove(row, col);
+
+                // Stop dragging, the controller and board will handle the rest
+                pieceBeingDragged = null;
+                repaint();
+
+                // We can re-add game-over checks here later
+                // For example: if (controller.isGameOver()) { ... }
+            }
         }
 
-        int col = e.getX() / SQUARE_SIZE;
-        int row = e.getY() / SQUARE_SIZE;
-
-        boolean moveSuccessful = false;
-
-        if (col >= 0 && col < 8 && row >= 0 && row < 8) {
-            moveSuccessful = controller.makeMove(row, col);
-        }
-
-        if (originalSquare != null) {
-            originalSquare.setDisplay(true);
-        }
-
-        currentPiece = null;
-        originalSquare = null;
-        repaint();
-
-        if (moveSuccessful) {
-            SwingUtilities.invokeLater(() -> {
-                if (controller.isGameOver()) {
-                    boolean whiteWin = controller.getCheckmateDetector().blackCheckMated();
-                    gameWindow.checkmateOccurred(whiteWin ? 0 : 1);
-                } else if (controller.isStalemate()) {
-                    gameWindow.stalemateOccurred();
-                } else if (controller.isDraw()) {
-                    gameWindow.drawOccurred(controller.getDrawReason());
-                }
-            });
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            if (pieceBeingDragged != null) {
+                dragX = e.getX();
+                dragY = e.getY();
+                repaint();
+            }
         }
     }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-        if (currentPiece != null) {
-            currentX = e.getX();
-            currentY = e.getY();
-            repaint();
-        }
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {}
-
-    @Override
-    public void mouseEntered(MouseEvent e) {}
-
-    @Override
-    public void mouseExited(MouseEvent e) {}
-
-    @Override
-    public void mouseMoved(MouseEvent e) {}
 }
